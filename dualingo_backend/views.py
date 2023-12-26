@@ -1,6 +1,8 @@
+import base64
 import json
 from google.api_core.exceptions import GoogleAPICallError
 from google.cloud import speech, translate_v2 as translate
+from google.cloud import texttospeech
 from google.cloud.speech import RecognitionConfig, RecognitionAudio
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -116,5 +118,53 @@ def process_and_translate(request):
 
     except GoogleAPICallError as e:
         return JsonResponse({"error": "Google API call failed: " + str(e)}, status=500)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+    
+    
+@csrf_exempt
+@require_http_methods(["POST"])
+def text_to_speech(request):
+    try:
+        # Parse the request body to get the text and language_code
+        data = json.loads(request.body)
+        text = data.get("text")
+        language_code = data.get("language_code", "en-US")  # Default to English
+
+        if not text:
+            return JsonResponse({"error": "No text provided"}, status=400)
+
+        # Initialize Google Cloud Text-to-Speech client
+        client = texttospeech.TextToSpeechClient()
+
+        # Set up the text input to be synthesized
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+
+        # Build the voice request
+        voice = texttospeech.VoiceSelectionParams(
+            language_code=language_code,
+            ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
+        )
+
+        # Select the type of audio file to be returned
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3
+        )
+
+        # Perform the text-to-speech request
+        response = client.synthesize_speech(
+            input=synthesis_input,
+            voice=voice,
+            audio_config=audio_config
+        )
+
+        # Encode the audio content to base64
+        audio_base64 = base64.b64encode(response.audio_content).decode("utf-8")
+
+        # Return the base64-encoded audio content in the response
+        return JsonResponse({
+            "audio_content_base64": audio_base64
+        }, status=200)
+
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)

@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from dualingo_backend.views import record, process_and_translate
+from dualingo_backend.views import record, process_and_translate, text_to_speech
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('record/', record, name='record'),
     path('process-and-translate/', process_and_translate, name='process_and_translate'),
+    path('text-to-speech/', text_to_speech, name='text_to_speech'),
 ]
