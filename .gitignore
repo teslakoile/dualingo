@@ -3,3 +3,4 @@ db.sqlite3
 *.pyc
 venv/
 *.env
+dualingo-409308-23cfc00884e4.json

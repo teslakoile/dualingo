@@ -17,6 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from dualingo_backend.views import record, process_and_translate
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('record/', record, name='record'),
+    path('process-and-translate/', process_and_translate, name='process_and_translate'),
 ]
