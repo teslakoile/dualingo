@@ -54,7 +54,7 @@ def process_and_translate(request):
         # Create a RecognitionConfig
         config = RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-            sample_rate_hertz=0,  # Auto-detect sample rate
+            sample_rate_hertz=16000,  
             enable_automatic_punctuation=True,
             model='default',
             language_code=language_code,
