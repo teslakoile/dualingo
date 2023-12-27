@@ -53,7 +53,7 @@ def process_and_translate(request):
 
         # Create a RecognitionConfig
         config = RecognitionConfig(
-            encoding=speech.RecognitionConfig.AudioEncoding.FLAC,
+            encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
             sample_rate_hertz=0,  # Auto-detect sample rate
             enable_automatic_punctuation=True,
             model='default',
